@@ -1,15 +1,47 @@
-//
-//  main.cpp
-//  cryptography-assignment2-v1.1
-//
-//  Created by Alexander Mendoza on 3/1/23.
-//  Copyright © 2023 AM. All rights reserved.
-//
-
+/*
+ Alexander Mendoza
+ 
+ */
 #include <iostream>
+#include <string>
+#include <cmath>
 
-int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+std::string DES();
+
+
+std::string DES(){
+    int INIT_PERM[64]{
+        58,50,42,34,26,18,10,2,
+        60,52,44,36,28,20,12,4,
+        62,54,46,38,30,22,14,6,
+        64,56,48,40,32,24,16,8,
+        57,49,41,33,25,17,9,1,
+        59,51,43,35,27,19,11,3,
+        61, 53,45,37,29,21,13,5,
+        63,55,47,39,31,23,15,7
+    };
+    
+    //initial permutation
+    std::string initPerm = "";
+    
+    for (int i =0; i<64;i++){
+        //-1 for indexing through the array ex: 64 is out of the range
+       // initPerm +=plainTxt[INIT_PERM[i]-1]];
+    }
+    
+    std::string left = initPerm.substr(0,32);
+    std::string right = initPerm.substr(0,32);
+}
+
+
+
+int main() {
+    std::string plainTxt = "1011000111100110011110100101111100000100100";
+    
+    //    std::string str = "hello world";
+    //
+    //    for (int i = 0; i <str.size(); i++){
+    //        std::cout<<std::bitset<8>(str[i])<<' ';
+    //    }
     return 0;
 }
