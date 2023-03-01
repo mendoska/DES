@@ -25,6 +25,7 @@
 /* Begin PBXFileReference section */
 		FADC3F6829AFFA300077C525 /* cryptography-assignment2-v1.1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "cryptography-assignment2-v1.1"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FADC3F6B29AFFA300077C525 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		FADC3F7229AFFA570077C525 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,7 +42,8 @@
 		FADC3F5F29AFFA300077C525 = {
 			isa = PBXGroup;
 			children = (
-				FADC3F6A29AFFA300077C525 /* cryptography-assignment2-v1.1 */,
+				FADC3F6B29AFFA300077C525 /* main.cpp */,
+				FADC3F7229AFFA570077C525 /* .gitignore */,
 				FADC3F6929AFFA300077C525 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -52,14 +54,6 @@
 				FADC3F6829AFFA300077C525 /* cryptography-assignment2-v1.1 */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		FADC3F6A29AFFA300077C525 /* cryptography-assignment2-v1.1 */ = {
-			isa = PBXGroup;
-			children = (
-				FADC3F6B29AFFA300077C525 /* main.cpp */,
-			);
-			path = "cryptography-assignment2-v1.1";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
