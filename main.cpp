@@ -9,7 +9,7 @@
 std::string DES();
 
 
-std::string DES(){
+std::string DES(std::string plainTxt){
     
     //declaring all tables/matrices
     int INIT_PERM[64]{
@@ -109,11 +109,14 @@ std::string DES(){
     
     for (int i =0; i<64;i++){
         //-1 for indexing through the array ex: 64 is out of the range
-       // initPerm +=plainTxt[INIT_PERM[i]-1]];
+       initPerm += plainTxt[INIT_PERM[i]-1];
     }
     
+    //splitting left & right from initial permutation
     std::string left = initPerm.substr(0,32);
-    std::string right = initPerm.substr(0,32);
+    std::string right = initPerm.substr(32,32);
+
+    return 0;
 }
 
 
