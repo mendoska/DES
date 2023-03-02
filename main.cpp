@@ -10,7 +10,34 @@ std::string DES();
 //declaring global to pass through function
 std::string kKeys[16];
 
+//turns decimal to binary
+//needed for s boxes
+std::string decimalToBinary(int dec){
+    std::string binary;
+    
+    while (dec!=0 ){
+        binary =(dec % 2 == 0 ? "0":"1") +binary;
+        dec = dec/2;
+    }
+    while(binary.length()<4){
+        binary = "0" + binary;
+    }
+    return binary;
+}
 
+int binaryToDecimal(std::string binary){
+    int decimal = 0;
+    int counter = 0;
+    int size = binary.length();
+
+    for (int i = size-1; i>=0; i--){
+        if (binary[i] == '1'){
+            decimal += pow(2,counter);
+        }
+        counter++;
+    }
+    return decimal;
+}
 
 
 std::string xorString(std::string x, std::string y){
@@ -238,12 +265,23 @@ std::string DES(std::string plainTxt){
 
     //encrypt 16 times
     for (int i=0; i<16; i++){
-        //need to expand right side from 32 bits to 48 bits
         std::string rightExpansion = "";
+        //need to expand right side from 32 bits to 48 bits
+        for(int i = 0; i<64; i++){
         rightExpansion += right[EXPANSION[i]-1];
-    }
+        }
+    //get the right side and xor with a key from table (f) III
+    std::string xored = xorString(kKeys[i],rightExpansion);
+    std::string result ="";
     
-    return 0;
+    //III.3 8 substitution boxes of 6 bits
+        for (int i =0; i <8; i++){
+            
+        }
+    
+    
+    }
+ return 0;
 }
 
 
