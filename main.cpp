@@ -7,6 +7,11 @@
 #include <cmath>
 
 std::string DES();
+//declaring global to pass through function
+std::string kKeys[16];
+
+
+
 
 std::string xorString(std::string x, std::string y){
     std::string result ="";
@@ -22,6 +27,39 @@ std::string xorString(std::string x, std::string y){
     }
     return result;
 }
+
+std::string rotate_once(std::string keyStr){
+    std::string rotated="";
+    
+    //index at 1 because of rotation
+    for (int i=1; i<28; i++){
+        rotated +=keyStr[i];
+    }
+    //finishing rotation by adding first bit at the end
+    rotated += keyStr[0];
+    return rotated;
+}
+
+std::string rotate_twice(std::string keyStr){
+    std::string rotated="";
+    
+    //run loop twice because of two rotations
+    for(int i=0; i<2; i++){
+        //index at 1 because of rotation
+        for (int j=1; j<28; j++){
+            rotated +=keyStr[j];
+            }
+        //placing first bit at the end
+        //storing rotated string as new string to rotate once more
+        rotated += keyStr[0];
+        keyStr = rotated;
+        rotated = "";
+        }
+    return keyStr;
+    }
+
+
+
 
 void keys(std::string key){
     //PC1 Table
@@ -48,7 +86,44 @@ void keys(std::string key){
         46,42,50,36,29,32
     };
     
+    std::string pKey ="";
+   
+    //passing pKey to PC1 table
+    //64 bit to 56 bit
     
+    for (int i =0; i<56; i++){
+        pKey += key[pc1[i]-1];
+    }
+    
+    //divide this key into two equal halves C and D
+    std::string c = pKey.substr(0,28);
+    std::string d = pKey.substr(28,28);
+    
+    //16 rounds of key generation
+    //according to DES round 1,2,9,16 two halves are each rotated left by one bit
+    //all other rounds two will be rotated to left
+    
+    for (int i =0; i<16; i++){
+        if (i == 0 ||i==1 || i==8 || i==15){
+            //rotate once
+            c = rotate_once(c);
+            d= rotate_once(d);
+        }
+        else {
+            c = rotate_twice(c);
+            d = rotate_twice(d);
+        }
+    
+    std::string combined = c+d;
+    std::string kKey ="";
+    
+    //passing kKey into pc2 table, will be stored in a kKey array of size 16
+    //48 bits
+    for (int i=0; i<48; i++){
+        kKey+= combined[pc2[i]-1];
+    }
+        kKeys[i]= kKey;
+    }
 }
 
 
