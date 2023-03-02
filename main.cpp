@@ -277,22 +277,58 @@ std::string DES(std::string plainTxt){
     //III.3 8 substitution boxes of 6 bits
         for (int i =0; i <8; i++){
             
+            //this grabs the first bit and last bit of the xored to get the row from sbox
+            std::string rowStr = xored.substr(i*6,1) +xored.substr(i*6 +5,1);
+            int row = binaryToDecimal(rowStr);
+            
+            //this grabs the bits between the first and last bit
+            std::string colStr = xored.substr(i*6 + 1,1) + xored.substr(i*6 + 2,1) + xored.substr(i*6 + 3,1) + xored.substr(i*6 + 4,1);
+            int col = binaryToDecimal(colStr);
+            
+            //after getting the row & column, this grabs the number from one of the 4x16 matrix
+            //i represents which of the 8 matrices to chose
+            int x = S_BOXES[i][row][col];
+            result += decimalToBinary(x);
         }
-    
-    
+        //creating permutation
+        std::string perm = "";
+       //running through f function of 32 bits
+        for (int i = 0; i<32; i++){
+            perm += result[PERM_FUNCTION[i]-1];
+        }
+        xored= xorString(perm,left);
+        left = xored;
+        
+        if (i<15){
+            //as per the algorithm swap left and right every iteration
+            std::string temp = right;
+            right = xored;
+            left = temp;
+        }
     }
- return 0;
+ //combine left &right before last permutation
+    std::string lr = left + right;
+    std::string cipherTxt = "";
+    //run on the inverse perm table
+    for (int i=0; i<64; i++){
+        cipherTxt += lr[INV_PERM[i]-1];
+    }
+    
+    return cipherTxt;
 }
 
 
 
 int main() {
-    std::string plainTxt = "1011000111100110011110100101111100000100100";
     
-    //    std::string str = "hello world";
-    //
-    //    for (int i = 0; i <str.size(); i++){
-    //        std::cout<<std::bitset<8>(str[i])<<' ';
-    //    }
+    std::string key= "1010101010111011000010010001100000100111001101101100110011011101";
+
+    std::string plainTxt = "1010101111001101111001101010101111001101000100110010010100110110";
+    
+    keys(key);
+    std::cout<<"Plain txt: " <<plainTxt<<"\n";
+    std::string ct=DES(plainTxt);
+    std::cout<<"Cipher txt:" <<ct<<"\n";
+    
     return 0;
 }
