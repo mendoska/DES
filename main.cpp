@@ -345,13 +345,13 @@ std::string DES(std::string plainTxt){
 
 
 
-int main() {
+
     
     
     
     
     
-   // std::string key= "1010101010111011000010010001100000100111001101101100110011011101";
+   //
 
     //std::string plainTxt = "1010101111001101111001101010101111001101000100110010010100110110";
 //
@@ -360,12 +360,7 @@ int main() {
 //    std::string plainTxt;
 //
 //
-//    std::cout<<"enter a key\n";
-//    std::cin>>key;
-//    std::cout <<"enter the block of text you'd like to encrypt\n";
-//    std::cin>>plainTxt;
-//
-//
+
 //
 //    std::cout<<"This is key you entered: "<<key<<std::endl;
 //    std::cout<<"This is plainTxt you entered: "<<plainTxt<<std::endl;
@@ -411,12 +406,36 @@ int main() {
 //    std::string iv = generateIV();
 //    std::cout << iv;
 //
+//    int response;
+//
+//    cout<<"Do you have a 64-bit number master, or 8 character long master key: \n 1.number \n 2.string";
+//    cin>>response;
+//
+//
+  //  } //end while
+//
+//    cout<<"Please enter your master key: ";
+//    getline(cin,mKey);
+//
+//    string strMKey;
+//    for (char &c: mKey){
+//        strMKey += bitset<8>(c).to_string();
+//    }
+//
+//    cout<<strMKey<<endl;
+//    cout<<strMKey.length();
+//
+//    cout<<"stop";
+
+
+int main() {
     
     string plainText;
-    vector<string> blockTxt;
-    cout << "Enter your plain text: ";
     
+    vector<string> blockTxt; //this is what is needed for block cipher
+    cout << "Enter your plain text: ";
     getline(cin, plainText);
+    std::string mKey= "1010101010111011000010010001100000100111001101101100110011011101";
     
     string bin;
     for (char& c : plainText)
@@ -449,20 +468,20 @@ int main() {
             cout<<blockTxt[i].length()<<" ";
         }
     
-    
-    cout<<"\n\n";
-  
-    string decoded = "";
-    for (string& binaryChunk : blockTxt)
-    {
-        for (int i = 0; i < 64; i += 8)
-        {
-            decoded += static_cast<char>(bitset<8>(binaryChunk.substr(i, 8)).to_ulong());
-        }
-    }
-    
-    cout << "Decoded message: " << decoded << endl;
-    
+//    
+//    cout<<"\n\n";
+//  
+//    string decoded = "";
+//    for (string& binaryChunk : blockTxt)
+//    {
+//        for (int i = 0; i < 64; i += 8)
+//        {
+//            decoded += static_cast<char>(bitset<8>(binaryChunk.substr(i, 8)).to_ulong());
+//        }
+//    }
+//    
+//    cout << "Decoded message: " << decoded << endl;
+//    
     
 //
 //
