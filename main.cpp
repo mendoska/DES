@@ -1,7 +1,10 @@
 /*
  Alexander Mendoza
- 
+ Z23435963
+ https://github.com/mendoska/cryptography-assignment2-v1.1
+ CIS5371 Cryptography
  */
+
 #include <iostream>
 #include <string>
 #include <bitset>
@@ -11,13 +14,9 @@
 using namespace std;
 
 
-
-
-
 std::string DES();
 //declaring global to pass through function
 std::string kKeys[16];
-
 
 
 //turns decimal to binary
@@ -49,20 +48,19 @@ int binaryToDecimal(std::string binary){
     return decimal;
 }
 
- void generateIV(string &ivStr){
-    // Create a random number generator using the Mersenne Twister algorithm
-    std::mt19937_64 rng(std::random_device{}());
-    
-    // Generate a 64-bit random number to use as the IV
-    uint64_t iv = rng();
-    
-    // Convert the IV to a binary string
-    ivStr = std::bitset<64>(iv).to_string();
-    
-    // Output the IV as a binary string
-    //std::cout << iv_str << std::endl;
-}
+void generateIV(string &ivStr){
+// Create a random number generator using the Mersenne Twister algorithm
+std::mt19937_64 rng(std::random_device{}());
 
+// Generate a 64-bit random number to use as the IV
+uint64_t iv = rng();
+
+// Convert the IV to a binary string
+ivStr = std::bitset<64>(iv).to_string();
+
+// Output the IV as a binary string
+//std::cout << iv_str << std::endl;
+}
 
 std::string xorString(std::string x, std::string y){
     std::string result ="";
@@ -341,11 +339,14 @@ std::string DES(std::string plainTxt){
     return cipherTxt;
 }
 
-
-
-
-    
+//mode of operation
 void OFB(string masterKey, vector<string> block, int length){
+    //create a way to show the encrypted message and decrypted message before
+    
+    vector<string> encBlock; //this is where i'll store all the yi
+    vector<string> decBlock; //in theory this should result in the plain text
+    
+    
     //first encryption with IV & master key
     string IV;
     
@@ -358,96 +359,104 @@ void OFB(string masterKey, vector<string> block, int length){
     
     
     string yEncInit = xorString(sEInitial,block[0]);
+   
+    encBlock.push_back(yEncInit); //adding to the dec block
     
     //first block that has been decrypted
-    cout <<yEncInit<<endl;
+    //cout <<yEncInit<<endl;
     
     //Decryption
    string sDInitial = DES(IV);
     
     string xDecInitial = xorString(sDInitial, yEncInit);
     
+    decBlock.push_back(xDecInitial);
+    
     //this should be the initial plain text
-    cout <<xDecInitial<<endl;
+    //cout <<xDecInitial<<endl;
     
     //storing s-1
     string tempx = sEInitial;
     string tempy = sDInitial;
+    
+    
     //loop for general
     for (int i = 1; i<length; i++){
         //encryption
         string sEnc = DES(tempx);
         string yEnc = xorString(sEnc,block[i]);
-        cout <<"This is the " <<i<<" block and it has been encrypted "<<endl;
+      //  cout <<"This is the " <<i<<" block and it has been encrypted "<<yEnc <<endl;
+        encBlock.push_back(yEnc);
         
         //decryption
         string sDec = DES(tempy);
         string xDec = xorString(sDec,yEnc);
-        cout <<"This is the " <<i<<" block and it has been decrypted "<<endl;
+      //  cout <<"This is the " <<i<<" block and it has been decrypted "<<xDec<<endl;
+        decBlock.push_back(xDec);
 
         tempx = sEnc;
         tempy = sDec;
     }
-}
-
+    //now get thos vectors and convert them to text
     
-   //
+string decoded = "";
+        for (string& binaryChunk : encBlock)
+        {
+            for (int i = 0; i < 64; i += 8)
+            {
+                decoded += static_cast<char>(bitset<8>(binaryChunk.substr(i, 8)).to_ulong());
+            }
+        }
 
-    //std::string plainTxt = "1010101111001101111001101010101111001101000100110010010100110110";
-//
-//    std::string key;
-//
-//    std::string plainTxt;
-//
-//
-
-//
-//    std::cout<<"This is key you entered: "<<key<<std::endl;
-//    std::cout<<"This is plainTxt you entered: "<<plainTxt<<std::endl;
-//
-//    std::bitset<64>(key).to_string();
-//    std::bitset<64>(plainTxt).to_string();
-//
-//    std::cout<<"This is your key in 64 bits binary"<<key<<std::endl;
-//    std::cout<<"This is your plaintxt in 64 bits binary"<<plainTxt<<std::endl;
-//
-//
-
-//    int response;
-//
-//    cout<<"Do you have a 64-bit number master, or 8 character long master key: \n 1.number \n 2.string";
-//    cin>>response;
-//
-//
-  //  } //end while
-//
-//    cout<<"Please enter your master key: ";
-//    getline(cin,mKey);
-//
-//    string strMKey;
-//    for (char &c: mKey){
-//        strMKey += bitset<8>(c).to_string();
-//    }
-//
-//    cout<<strMKey<<endl;
-//    cout<<strMKey.length();
-//
-//    cout<<"stop";
+        cout << "Encryped message: " << decoded << endl;
+    
+    decoded = "";
+    for (string& binaryChunk : decBlock)
+    {
+        for (int i = 0; i < 64; i += 8)
+        {
+            decoded += static_cast<char>(bitset<8>(binaryChunk.substr(i, 8)).to_ulong());
+        }
+    }
+    cout << "Message decrypted: " << decoded << endl;
+}
 
 
 int main() {
-    
-//    std::string iv;
-//    generateIV(iv);
-//    std::cout << iv<<" " <<iv.length();
-//
-//
-//    cout<<"stop";
+
     string plainText;
     vector<string> blockTxt; //this is what is needed for block cipher
     cout << "Enter your plain text: ";
     getline(cin, plainText);
-    std::string mKey= "1010101010111011000010010001100000100111001101101100110011011101";
+    
+    string mKey;
+    
+    //for the sake of testing and ease of implementation I will make the master key be 8 bits long
+    
+    cout<<"Please enter your 8 character long master key: ";
+    getline(cin, mKey);
+    while (mKey.length() != 8){
+        cout<<"That master key was not 8 characters long, please try again. ";
+        getline(cin, mKey);
+    }
+    
+    //turning to binary
+            string mKeyBin;
+            for (char &c: mKey){
+                mKeyBin += bitset<8>(c).to_string();
+            }
+
+    
+    
+    //              testing
+//            cout<<mKeyBin<<"\n";
+//            cout<<mKeyBin.size();
+//
+//            cout<<"stop";
+    
+
+    
+    //turning plain text to binary
     
     string bin;
     for (char& c : plainText)
@@ -474,67 +483,100 @@ int main() {
         }
     }
     
+    //getting size of vector
+    int size = blockTxt.size();
     
-//      for testing
-//
-//      for (int i = 0; i<blockTxt.size(); i++){
-//            cout<<blockTxt[i]<<" ";
-//            cout<<blockTxt[i].length()<<" ";
-//        }
-    
-    
-    keys(mKey);
-    cout<<"This is one block of 64 bits: "<<blockTxt[0]<<" "<<blockTxt[0].length()<<"\n";
-    std::string ct=DES(blockTxt[0]);
-    std::cout<<"This is that one block now as ciphertext: "<<ct<<"\n";
-    
-  //DECRYPTION
-        int i = 15;
-        int j = 0;
-    
-        while (i>j){
-    
-            //doing the key swap in reverse orer from the encryption
-            std::string temp = kKeys[i];
-            kKeys[i] = kKeys[j];
-            kKeys[j] = temp;
-            i--;
-            j++;
-        }
-    
-        //setting plain text to be the encrypted text
-        blockTxt[0]= ct;
-        string decrypted;
-        decrypted = DES(blockTxt[0]);
-    
-        std::cout<<"decrypted txt: "<<decrypted<<std::endl;
-    
-    //
-    //
+    OFB(mKeyBin, blockTxt, size);
 
-    //
-    
-//
-//    cout<<"\n\n";
-//
-//    string decoded = "";
-//    for (string& binaryChunk : blockTxt)
-//    {
-//        for (int i = 0; i < 64; i += 8)
-//        {
-//            decoded += static_cast<char>(bitset<8>(binaryChunk.substr(i, 8)).to_ulong());
-//        }
-//    }
-//
-//    cout << "Decoded message: " << decoded << endl;
-//
-    
-//
-//
-//
-//
-    
-
-    
     return 0;
 }
+
+
+
+/*
+code used for testing etc.
+ 
+ 
+ //    keys(mKey);
+ //    cout<<"This is one block of 64 bits: "<<blockTxt[0]<<" "<<blockTxt[0].length()<<"\n";
+ //    std::string ct=DES(blockTxt[0]);
+ //    std::cout<<"This is that one block now as ciphertext: "<<ct<<"\n";
+ //
+ //  //DECRYPTION OF DES
+ //        int i = 15;
+ //        int j = 0;
+ //
+ //        while (i>j){
+ //
+ //            //doing the key swap in reverse orer from the encryption
+ //            std::string temp = kKeys[i];
+ //            kKeys[i] = kKeys[j];
+ //            kKeys[j] = temp;
+ //            i--;
+ //            j++;
+ //        }
+ //
+ //        //setting plain text to be the encrypted text
+ //        blockTxt[0]= ct;
+ //        string decrypted;
+ //        decrypted = DES(blockTxt[0]);
+ //
+ //        std::cout<<"decrypted txt: "<<decrypted<<std::endl;
+ //
+ //
+ //
+ 
+ //
+ 
+ //
+ //    cout<<"\n\n";
+ //
+ //    string decoded = "";
+ //    for (string& binaryChunk : blockTxt)
+ //    {
+ //        for (int i = 0; i < 64; i += 8)
+ //        {
+ //            decoded += static_cast<char>(bitset<8>(binaryChunk.substr(i, 8)).to_ulong());
+ //        }
+ //    }
+ //
+ //    cout << "Decoded message: " << decoded << endl;
+ //
+ 
+ //
+ ////
+ //     // for testing vector
+ //
+ //      for (int i = 0; i<blockTxt.size(); i++){
+ //            cout<<blockTxt[i]<<" ";
+ //            cout<<blockTxt[i].length()<<" ";
+ //        }
+ //
+ //
+ //
+ 
+ //    // for testing
+ //
+ //
+ //    cout<<"\nThis is the encrypted text: ";
+ //    for (int i = 0; i<encBlock.size(); i++){
+ //        cout<<encBlock[i]<<" ";
+ //        cout<<encBlock[i].length()<<" ";
+ //    }
+ 
+ //    cout<<"\nThis is the text decrypted: ";
+ //    for (int i = 0; i<decBlock.size(); i++){
+ //        cout<<decBlock[i]<<" ";
+ //        cout<<decBlock[i].length()<<" ";
+ //    }
+ //
+ //    cout<<"\nThis is the text that was entered initially: ";
+ //
+ //    for (int i = 0; i<block.size(); i++){
+ //        cout<<block[i]<<" ";
+ //        cout<<block[i].length()<<" ";
+ //    }
+ //
+ 
+ 
+ */
