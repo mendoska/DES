@@ -49,7 +49,7 @@ int binaryToDecimal(std::string binary){
     return decimal;
 }
 
-std::string generateIV(){
+ void generateIV(string &ivStr){
     // Create a random number generator using the Mersenne Twister algorithm
     std::mt19937_64 rng(std::random_device{}());
     
@@ -57,12 +57,10 @@ std::string generateIV(){
     uint64_t iv = rng();
     
     // Convert the IV to a binary string
-    std::string iv_str = std::bitset<64>(iv).to_string();
+    ivStr = std::bitset<64>(iv).to_string();
     
     // Output the IV as a binary string
-    std::cout << iv_str << std::endl;
-    
-    return iv_str;
+    //std::cout << iv_str << std::endl;
 }
 
 
@@ -347,9 +345,51 @@ std::string DES(std::string plainTxt){
 
 
     
+void OFB(string masterKey, vector<string> block, int length){
+    //first encryption with IV & master key
+    string IV;
+    
+    generateIV(IV);
+    
+    keys(masterKey);
+    
+    //si
+    string sEInitial = DES(IV);
     
     
+    string yEncInit = xorString(sEInitial,block[0]);
     
+    //first block that has been decrypted
+    cout <<yEncInit<<endl;
+    
+    //Decryption
+   string sDInitial = DES(IV);
+    
+    string xDecInitial = xorString(sDInitial, yEncInit);
+    
+    //this should be the initial plain text
+    cout <<xDecInitial<<endl;
+    
+    //storing s-1
+    string tempx = sEInitial;
+    string tempy = sDInitial;
+    //loop for general
+    for (int i = 1; i<length; i++){
+        //encryption
+        string sEnc = DES(tempx);
+        string yEnc = xorString(sEnc,block[i]);
+        cout <<"This is the " <<i<<" block and it has been encrypted "<<endl;
+        
+        //decryption
+        string sDec = DES(tempy);
+        string xDec = xorString(sDec,yEnc);
+        cout <<"This is the " <<i<<" block and it has been decrypted "<<endl;
+
+        tempx = sEnc;
+        tempy = sDec;
+    }
+}
+
     
    //
 
@@ -397,6 +437,12 @@ std::string DES(std::string plainTxt){
 
 int main() {
     
+//    std::string iv;
+//    generateIV(iv);
+//    std::cout << iv<<" " <<iv.length();
+//
+//
+//    cout<<"stop";
     string plainText;
     vector<string> blockTxt; //this is what is needed for block cipher
     cout << "Enter your plain text: ";
@@ -465,8 +511,7 @@ int main() {
     
     //
     //
-    //    std::string iv = generateIV();
-    //    std::cout << iv;
+
     //
     
 //
