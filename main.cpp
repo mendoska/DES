@@ -6,10 +6,19 @@
 #include <string>
 #include <bitset>
 #include <random>
+#include <vector>
+
+using namespace std;
+
+
+
+
 
 std::string DES();
 //declaring global to pass through function
 std::string kKeys[16];
+
+
 
 //turns decimal to binary
 //needed for s boxes
@@ -338,39 +347,128 @@ std::string DES(std::string plainTxt){
 
 int main() {
     
-    std::string key= "1010101010111011000010010001100000100111001101101100110011011101";
-    
-    std::string plainTxt = "1010101111001101111001101010101111001101000100110010010100110110";
-    
-    keys(key);
-    std::cout<<"Plain txt: " <<plainTxt<<"\n";
-    std::string ct=DES(plainTxt);
-    std::cout<<"Cipher txt:" <<ct<<"\n";
     
     
     
     
+   // std::string key= "1010101010111011000010010001100000100111001101101100110011011101";
+
+    //std::string plainTxt = "1010101111001101111001101010101111001101000100110010010100110110";
+//
+//    std::string key;
+//
+//    std::string plainTxt;
+//
+//
+//    std::cout<<"enter a key\n";
+//    std::cin>>key;
+//    std::cout <<"enter the block of text you'd like to encrypt\n";
+//    std::cin>>plainTxt;
+//
+//
+//
+//    std::cout<<"This is key you entered: "<<key<<std::endl;
+//    std::cout<<"This is plainTxt you entered: "<<plainTxt<<std::endl;
+//
+//    std::bitset<64>(key).to_string();
+//    std::bitset<64>(plainTxt).to_string();
+//
+//    std::cout<<"This is your key in 64 bits binary"<<key<<std::endl;
+//    std::cout<<"This is your plaintxt in 64 bits binary"<<plainTxt<<std::endl;
+//
+//
+//    keys(key);
+//    std::cout<<"Plain txt: " <<plainTxt<<"\n";
+//    std::string ct=DES(plainTxt);
+//    std::cout<<"Cipher txt:" <<ct<<"\n";
+//
+//
+//
+//
+//
+//    int i = 15;
+//    int j = 0;
+//
+//    while (i>j){
+//
+//        //doing the key swap in reverse orer from the encryption
+//        std::string temp = kKeys[i];
+//        kKeys[i] = kKeys[j];
+//        kKeys[j] = temp;
+//        i--;
+//        j++;
+//    }
+//
+//    //setting plain text to be the encrypted text
+//    plainTxt = ct;
+//    std::string decrypted;
+//    decrypted = DES(plainTxt);
+//
+//    std::cout<<"decrypted txt: "<<decrypted<<std::endl;
+//
+//
+//
+//    std::string iv = generateIV();
+//    std::cout << iv;
+//
     
-    int i = 15;
-    int j = 0;
+    string plainText;
+    vector<string> blockTxt;
+    cout << "Enter your plain text: ";
     
-    while (i>j){
-        
-        //doing the key swap in reverse orer from the encryption
-        std::string temp = kKeys[i];
-        kKeys[i] = kKeys[j];
-        kKeys[j] = temp;
-        i--;
-        j++;
+    getline(cin, plainText);
+    
+    string bin;
+    for (char& c : plainText)
+    {
+        //use for testing
+        // cout << bitset<8>(c) << " ";
+        //every letter is converted to 8 bits and appended to string
+        bin += bitset<8>(c).to_string();
+
     }
-
-    //setting plain text to be the encrypted text
-    plainTxt = ct;
-    std::string decrypted;
-    decrypted = DES(plainTxt);
     
-    std::cout<<"decrypted txt: "<<decrypted<<std::endl;
+    int binLength = bin.length();
     
-
+    //for every 64 bits in binary
+    for (int i =0; i<binLength; i+= 64){
+       //this checks for every 64 bits in binary to see if it meets this condition
+        //if it does, it will be given its own index in the array of block txt (else)
+        //if it does not it will be padded with zeroes
+        if ((i +64) > binLength){
+            blockTxt.push_back(bin.substr(i).append(64 - (binLength - i), '0'));
+        }
+        else{
+            blockTxt.push_back(bin.substr(i,64));
+        }
+    }
+    
+    
+        for (int i = 0; i<blockTxt.size(); i++){
+            cout<<blockTxt[i]<<" ";
+            cout<<blockTxt[i].length()<<" ";
+        }
+    
+    
+    cout<<"\n\n";
+  
+    string decoded = "";
+    for (string& binaryChunk : blockTxt)
+    {
+        for (int i = 0; i < 64; i += 8)
+        {
+            decoded += static_cast<char>(bitset<8>(binaryChunk.substr(i, 8)).to_ulong());
+        }
+    }
+    
+    cout << "Decoded message: " << decoded << endl;
+    
+    
+//
+//
+//
+//
+    
+    cout<<"\n";
     return 0;
 }
