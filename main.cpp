@@ -1,6 +1,5 @@
 /*
  Alexander Mendoza
- Z23435963
  https://github.com/mendoska/cryptography-assignment2-v1.1
  CIS5371 Cryptography
  */
